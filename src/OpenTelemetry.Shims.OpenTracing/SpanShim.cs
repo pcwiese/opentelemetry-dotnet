@@ -46,12 +46,6 @@ namespace OpenTelemetry.Shims.OpenTracing
         public SpanShim(TelemetrySpan span)
         {
             this.Span = span ?? throw new ArgumentNullException(nameof(span));
-
-            if (!this.Span.Context.IsValid)
-            {
-                throw new ArgumentException(nameof(this.Span.Context));
-            }
-
             this.spanContextShim = new SpanContextShim(this.Span.Context);
         }
 

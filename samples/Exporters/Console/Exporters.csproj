@@ -13,7 +13,18 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.3.0" />
+    <PackageReference Include="Grpc.Core" Version="2.26.0" />
+    <PackageReference Include="Grpc.Tools" Version="1.17.0" />
+    <PackageReference Include="OpenTracing.Contrib.Grpc" Version="0.2.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.1.58" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="proto/*.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="proto\foobar.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,5 +37,6 @@
     <ProjectReference Include="..\..\..\src\OpenTelemetry\OpenTelemetry.csproj" />
     <ProjectReference Include="..\..\..\src\OpenTelemetry.Exporter.Zipkin\OpenTelemetry.Exporter.Zipkin.csproj" />
     <ProjectReference Include="..\..\..\src\OpenTelemetry.Exporter.Jaeger\OpenTelemetry.Exporter.Jaeger.csproj" />
+    <ProjectReference Include="..\..\..\src\OpenTelemetry.Shims.OpenTracing\OpenTelemetry.Shims.OpenTracing.csproj" />
   </ItemGroup>
 </Project>

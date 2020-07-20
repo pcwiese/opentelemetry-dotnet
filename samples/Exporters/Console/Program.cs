@@ -39,7 +39,17 @@ namespace Samples
         /// <param name="args">Arguments from command line.</param>
         public static void Main(string[] args)
         {
-            Parser.Default.ParseArguments<JaegerOptions, ZipkinOptions, PrometheusOptions, HttpClientOptions, RedisOptions, ZPagesOptions, ConsoleOptions, OpenTelemetryShimOptions, OtlpOptions>(args)
+            Parser.Default.ParseArguments<
+                JaegerOptions,
+                ZipkinOptions,
+                PrometheusOptions,
+                HttpClientOptions,
+                RedisOptions,
+                ZPagesOptions,
+                ConsoleOptions,
+                OpenTelemetryShimOptions,
+                OtlpOptions,
+                OpenTracingShimOptions>(args)
                 .MapResult(
                     (JaegerOptions options) => TestJaegerExporter.Run(options.Host, options.Port),
                     (ZipkinOptions options) => TestZipkinExporter.Run(options.Uri),
@@ -50,6 +60,7 @@ namespace Samples
                     (ConsoleOptions options) => TestConsoleExporter.Run(options),
                     (OpenTelemetryShimOptions options) => TestOTelShimWithConsoleExporter.Run(options),
                     (OtlpOptions options) => TestOtlpExporter.Run(options.Endpoint),
+                    (OpenTracingShimOptions options) => TestOTracingShimWithConsoleExporter.Run(options),
                     errs => 1);
 
             Console.ReadLine();
@@ -124,6 +135,13 @@ namespace Samples
     {
         [Option('e', "endpoint", HelpText = "Target to which the exporter is going to send traces or metrics", Default = "localhost:55680")]
         public string Endpoint { get; set; }
+    }
+
+    [Verb("otracingshim", HelpText = "Specify the options required to test OpenTracing shim with console exporter")]
+    internal class OpenTracingShimOptions
+    {
+        [Option('p', "displayasjson", HelpText = "Specify if the output should be displayed as json or not (default: false)", Default = false)]
+        public bool DisplayAsJson { get; set; }
     }
 
 #pragma warning restore SA1402 // File may only contain a single type

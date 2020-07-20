@@ -1,0 +1,14 @@
+﻿syntax = "proto3";
+package Samples;
+
+service Foobar {
+  rpc DuplexStreaming (stream FoobarRequest) returns (stream FoobarResponse) {}
+}
+
+message FoobarRequest {
+  string message = 1;
+}
+
+message FoobarResponse {
+  string message = 1;
+}

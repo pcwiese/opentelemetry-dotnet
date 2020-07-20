@@ -32,7 +32,7 @@ namespace OpenTelemetry.Trace
         }
 
         /// <inheritdoc />
-        public override SpanContext Context => default;
+        public override SpanContext Context => SpanContext.BlankContext;
 
         /// <inheritdoc />
         public override bool IsRecording => false;
