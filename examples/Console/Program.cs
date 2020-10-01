@@ -40,7 +40,22 @@ namespace Examples.Console
         /// <param name="args">Arguments from command line.</param>
         public static void Main(string[] args)
         {
-            Parser.Default.ParseArguments<JaegerOptions, ZipkinOptions, PrometheusOptions, GrpcNetClientOptions, HttpClientOptions, RedisOptions, ZPagesOptions, ConsoleOptions, OpenTelemetryShimOptions, OpenTracingShimOptions, OtlpOptions>(args)
+            Parser.Default.ParseArguments<
+                JaegerOptions,
+                ZipkinOptions,
+                PrometheusOptions,
+                GrpcNetClientOptions,
+                HttpClientOptions,
+                RedisOptions,
+                ZPagesOptions,
+                ConsoleOptions,
+                OpenTelemetryShimOptions,
+                OpenTracingShimOptions,
+                OtlpOptions,
+#if DEBUG
+                OtlpFileOptions
+#endif
+                >(args)
                 .MapResult(
                     (JaegerOptions options) => TestJaegerExporter.Run(options.Host, options.Port),
                     (ZipkinOptions options) => TestZipkinExporter.Run(options.Uri),
@@ -53,6 +68,9 @@ namespace Examples.Console
                     (OpenTelemetryShimOptions options) => TestOTelShimWithConsoleExporter.Run(options),
                     (OpenTracingShimOptions options) => TestOpenTracingWithConsoleExporter.Run(options),
                     (OtlpOptions options) => TestOtlpExporter.Run(options.Endpoint),
+#if DEBUG
+                    (OtlpFileOptions options) => TestOtlpFileExporter.Run(options.FileName),
+#endif
                     errs => 1);
 
             System.Console.ReadLine();
@@ -135,6 +153,14 @@ namespace Examples.Console
         public string Endpoint { get; set; }
     }
 
+#if DEBUG
+    [Verb("otlpfile", HelpText = "Specify the options required to test OpenTelemetry Protocol (OTLP) file exporter")]
+    internal class OtlpFileOptions
+    {
+        [Option('f', "file", HelpText = "The target file name", Default = "otlp.json")]
+        public string FileName { get; set; }
+    }
+#endif
 #pragma warning restore SA1402 // File may only contain a single type
 
 }

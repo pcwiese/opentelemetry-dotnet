@@ -16,6 +16,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using OpenTelemetry.Exporter.OpenTelemetryProtocol;
 
 namespace OpenTelemetry.Trace
@@ -46,5 +47,25 @@ namespace OpenTelemetry.Trace
             // TODO: Pick Simple vs Batching based on OtlpExporterOptions
             return builder.AddProcessor(new BatchExportProcessor<Activity>(otlpExporter));
         }
+
+#if DEBUG
+        /// <summary>
+        /// Adds OpenTelemetry Protocol (OTLP) file exporter to the TracerProvider.
+        /// </summary>
+        /// <param name="builder">OpenTelemetry builder to use.</param>
+        /// <param name="fileName">The file name to write to.</param>
+        /// <returns>The instance of <see cref="TracerProviderBuilder"/> to chain the calls.</returns>
+#pragma warning disable RS0016 // Add public types and members to the declared API
+        public static TracerProviderBuilder AddOtlpTextWriterExporter(this TracerProviderBuilder builder, string fileName)
+#pragma warning restore RS0016 // Add public types and members to the declared API
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            return builder.AddProcessor(new SimpleExportProcessor<Activity>(new OtlpTextWriterExporter(File.CreateText(fileName))));
+        }
+#endif
     }
 }
