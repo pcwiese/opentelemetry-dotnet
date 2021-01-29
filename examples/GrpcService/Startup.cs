@@ -15,6 +15,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +23,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenTelemetry;
+using OpenTelemetry.Context.Propagation;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
@@ -64,9 +66,16 @@ namespace Examples.GrpcService
                         }));
                     break;
                 default:
-                    services.AddOpenTelemetryTracing((builder) => builder
-                        .AddAspNetCoreInstrumentation()
-                        .AddConsoleExporter());
+                    services.AddOpenTelemetryTracing(
+                        (builder) =>
+                        {
+                            // The propagate is a composite of B3 and W3C, favoring B3 on extraction
+                            Sdk.SetDefaultTextMapPropagator(new CompositeTextMapPropagator(new List<TextMapPropagator> { new B3Propagator(), new TraceContextPropagator() }));
+
+                            builder
+                                .AddAspNetCoreInstrumentation()
+                                .AddConsoleExporter();
+                        });
                     break;
             }
         }
