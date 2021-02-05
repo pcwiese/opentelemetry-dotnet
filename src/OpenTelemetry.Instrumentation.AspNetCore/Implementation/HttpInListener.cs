@@ -92,8 +92,8 @@ namespace OpenTelemetry.Instrumentation.AspNetCore.Implementation
                 {
                     // Create a new activity with its parent set from the extracted context.
                     // This makes the new activity as a "sibling" of the activity created by
-                    // Asp.Net Core.
-                    Activity newOne = new Activity(ActivityNameByHttpInListener);
+                    // Asp.Net Core. The operation name is the same as the incoming Activity.
+                    Activity newOne = new Activity(activity.OperationName);
                     newOne.SetParentId(ctx.ActivityContext.TraceId, ctx.ActivityContext.SpanId, ctx.ActivityContext.TraceFlags);
                     newOne.TraceStateString = ctx.ActivityContext.TraceState;
 
